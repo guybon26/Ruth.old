@@ -1,0 +1,16 @@
+platform :ios, '15.0'
+use_frameworks!
+
+target 'RuthEdge' do
+  # LibTorch Lite (PyTorch Mobile)
+  pod 'LibTorch-Lite'
+
+  # ExecuTorch Core and Backends
+  # Assuming executorch repo is checked out at ../executorch relative to this Podfile
+  # Adjust path as necessary for the actual environment
+  pod 'executorch', :path => '../executorch'
+  pod 'executorch/backends/coreml', :path => '../executorch'
+  pod 'executorch/backends/mps', :path => '../executorch'
+  
+  # Add other dependencies if needed
+end

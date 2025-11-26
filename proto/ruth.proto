@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package ruth;
+
+message Hyperparams {
+  float epsilon = 1;
+  float lr = 2;
+}
+
+message ClientUpdate {
+  string device_id = 1;
+  uint64 round_id = 2;
+  uint64 seed_id = 3;
+  float scalar = 4;
+  float loss = 5;
+  bytes signature = 6;
+  bytes attestation_token = 7;
+}
+
+message ServerInstruction {
+  string model_url = 1;
+  repeated uint64 seeds = 2;
+  Hyperparams params = 3;
+}

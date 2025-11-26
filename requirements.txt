@@ -1,0 +1,8 @@
+torch>=2.2
+executorch
+numpy
+scipy
+fastapi
+uvicorn
+cryptography
+tigramite

@@ -1,0 +1,35 @@
+PODS:
+  - executorch (0.1.0):
+    - executorch/backends (= 0.1.0)
+  - executorch/backends (0.1.0):
+    - executorch/backends/coreml (= 0.1.0)
+    - executorch/backends/mps (= 0.1.0)
+  - executorch/backends/coreml (0.1.0)
+  - executorch/backends/mps (0.1.0)
+  - LibTorch-Lite (2.1.0):
+    - LibTorch-Lite/Core (= 2.1.0)
+  - LibTorch-Lite/Core (2.1.0):
+    - LibTorch-Lite/Torch
+  - LibTorch-Lite/Torch (2.1.0)
+
+DEPENDENCIES:
+  - executorch (from `../executorch`)
+  - executorch/backends/coreml (from `../executorch`)
+  - executorch/backends/mps (from `../executorch`)
+  - LibTorch-Lite
+
+SPEC REPOS:
+  trunk:
+    - LibTorch-Lite
+
+EXTERNAL SOURCES:
+  executorch:
+    :path: "../executorch"
+
+SPEC CHECKSUMS:
+  executorch: af92548b8cd3632897590202e57201a71e028cef
+  LibTorch-Lite: ab75e4e60244786473c2e8f268c09af77240d127
+
+PODFILE CHECKSUM: 367621577d795cae9a74288104eee29c6b94202f
+
+COCOAPODS: 1.16.2

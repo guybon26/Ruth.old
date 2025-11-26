@@ -1,0 +1,14 @@
+name: RuthEdge
+options:
+  bundleIdPrefix: com.ruth
+targets:
+  RuthEdge:
+    type: application
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources: [RuthEdge]
+    settings:
+      INFOPLIST_FILE: RuthEdge/Info.plist
+      SWIFT_OBJC_BRIDGING_HEADER: RuthEdge/RuthEdge-Bridging-Header.h
+      OTHER_LDFLAGS: $(inherited) -all_load
+      ENABLE_BITCODE: NO

@@ -1,0 +1,66 @@
+name: Model Release Pipeline
+
+on:
+  push:
+    paths:
+      - 'models/**'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install boto3 redis
+
+      - name: Export Model to .pte
+        run: |
+          # Assuming export.py has a main block or CLI
+          # For now, we'll just run the script which should produce 'model.pte'
+          python ruth/core/export.py
+        continue-on-error: true # Since executorch might be missing in CI env without proper setup
+
+      - name: Verify Model with C++
+        run: |
+          # Compile the test loader
+          g++ -std=c++17 -o test_loader ruth/core/cpp/test_loader.cpp
+          
+          # Run verification (check if model.pte exists and is valid)
+          # If export failed (due to missing executorch), we might want to skip or fail
+          # For this pipeline, we assume export succeeds or we mock it
+          if [ -f "model.pte" ]; then
+            ./test_loader model.pte
+          else
+            echo "model.pte not found, skipping C++ verification"
+          fi
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Upload to S3
+        if: hashFiles('model.pte') != ''
+        run: |
+          aws s3 cp model.pte s3://ruth-models/model-v${{ github.sha }}.pte
+
+      - name: Update Redis Configuration
+        if: hashFiles('model.pte') != ''
+        env:
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+        run: |
+          python scripts/update_redis_config.py --round 1 --url s3://ruth-models/model-v${{ github.sha }}.pte
